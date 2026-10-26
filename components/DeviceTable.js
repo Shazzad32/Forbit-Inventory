@@ -12,9 +12,16 @@ function Cell({ row, col }) {
   if (col.type === "date") return fmtDate(v);
   if (col.type === "money") return <span className="num">৳ {money(v)}</span>;
   if (col.key === "device_type") {
-    return <span className={`pill ${v === "Voice" ? "pill-voice" : "pill-nonvoice"}`}>{TYPE_LABEL[v] ?? v}</span>;
+    return (
+      <span
+        className={`pill ${v === "Voice" ? "pill-voice" : "pill-nonvoice"}`}
+      >
+        {TYPE_LABEL[v] ?? v}
+      </span>
+    );
   }
-  if (col.key === "install_purpose") return <span className={`pill pill-${String(v).toLowerCase()}`}>{v}</span>;
+  if (col.key === "install_purpose")
+    return <span className={`pill pill-${String(v).toLowerCase()}`}>{v}</span>;
   return v;
 }
 
@@ -25,7 +32,15 @@ function Cell({ row, col }) {
  * `quick` = row shortcuts like "To Retail" (each opens its own form); `editForm` = which form the edit button opens; `back` = where to return after editing.
  * Pass `actions={false}` for a read-only table.
  */
-export default function DeviceTable({ columns, rows, quick = [], editForm, back = "/", actions = true, emptyHint }) {
+export default function DeviceTable({
+  columns,
+  rows,
+  quick = [],
+  editForm,
+  back = "/",
+  actions = true,
+  emptyHint,
+}) {
   const next = encodeURIComponent(back);
 
   if (rows.length === 0) {
@@ -33,7 +48,9 @@ export default function DeviceTable({ columns, rows, quick = [], editForm, back 
       <div className="panel empty">
         <Icon name="store" />
         <b>No devices found</b>
-        <span>{emptyHint ?? "Try a different search, or add a new device."}</span>
+        <span>
+          {emptyHint ?? "Try a different search, or add a new device."}
+        </span>
       </div>
     );
   }
@@ -63,7 +80,15 @@ export default function DeviceTable({ columns, rows, quick = [], editForm, back 
                   <td
                     key={c.key}
                     data-label={c.label}
-                    className={i === 0 ? "primary" : c.key === "problem" ? "cell-text" : c.type ? "nw" : undefined}
+                    className={
+                      i === 0
+                        ? "primary"
+                        : c.key === "problem"
+                        ? "cell-text"
+                        : c.type
+                        ? "nw"
+                        : undefined
+                    }
                   >
                     <Cell row={r} col={c} />
                   </td>
@@ -72,20 +97,28 @@ export default function DeviceTable({ columns, rows, quick = [], editForm, back 
                   <td className="actions">
                     <span className="row-actions">
                       {quick.map((q) => (
-                        <Link key={q.to} className="go" href={`/devices/${r._id}/${q.form ?? "send"}?to=${q.to}&next=${next}`}>
+                        <Link
+                          key={q.to}
+                          className="go"
+                          href={`/devices/${r._id}/${q.form ?? "send"}?to=${
+                            q.to
+                          }&next=${next}`}
+                        >
                           {q.label} <Icon name="arrow" />
                         </Link>
                       ))}
                       <Link
                         className="icon-btn"
-                        href={`/devices/${r._id}${editForm ? `/${editForm}` : ""}?next=${next}`}
+                        href={`/devices/${r._id}${
+                          editForm ? `/${editForm}` : ""
+                        }?next=${next}`}
                         aria-label={`Edit device ${r.device_id}`}
                         title="Edit"
                       >
                         <Icon name="edit" />
                         <span className="txt">Edit</span>
                       </Link>
-                      <form action={deleteDevice}>
+                      {/* <form action={deleteDevice}>
                         <input type="hidden" name="id" value={r._id} />
                         <ConfirmButton
                           message={`Delete device ${r.device_id}? This cannot be undone.`}
@@ -95,7 +128,7 @@ export default function DeviceTable({ columns, rows, quick = [], editForm, back 
                           <Icon name="trash" />
                           <span className="txt">Delete</span>
                         </ConfirmButton>
-                      </form>
+                      </form> */}
                     </span>
                   </td>
                 )}
