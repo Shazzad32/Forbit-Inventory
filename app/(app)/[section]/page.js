@@ -9,12 +9,15 @@ import DeviceTable from "@/components/DeviceTable";
 import Pagination from "@/components/Pagination";
 import ImportCsv from "@/components/ImportCsv";
 import Icon from "@/components/Icon";
-
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }) {
   const { section } = await params;
-  return { title: Object.hasOwn(SECTIONS, section) ? SECTIONS[section].title : "Not found" };
+  return {
+    title: Object.hasOwn(SECTIONS, section)
+      ? SECTIONS[section].title
+      : "Not found",
+  };
 }
 
 // /store, /retail, /rangs and /return all render through this one page.
@@ -32,14 +35,30 @@ export default async function SectionPage({ params, searchParams }) {
     countsByType(cfg.match),
   ]);
 
-  const back = `/${section}${page > 1 || q ? `?${new URLSearchParams({ ...(q && { q }), ...(page > 1 && { page }) })}` : ""}`;
+  const back = `/${section}${
+    page > 1 || q
+      ? `?${new URLSearchParams({
+          ...(q && { q }),
+          ...(page > 1 && { page }),
+        })}`
+      : ""
+  }`;
   const stats = [{ label: "Total", value: counts.total }];
-  if (section !== "return") stats.push({ label: "Non-voice", value: counts.nonVoice }, { label: "Voice", value: counts.voice });
+  if (section !== "return")
+    stats.push(
+      { label: "Non-voice", value: counts.nonVoice },
+      { label: "Voice", value: counts.voice }
+    );
 
   return (
     <div className="page">
       <PageHeader title={cfg.title} sub={cfg.subtitle} stats={stats}>
-        <Link href={`/devices/new?send_to=${cfg.sendTo}&next=${encodeURIComponent(`/${section}`)}`} className="btn">
+        <Link
+          href={`/devices/new?send_to=${cfg.sendTo}&next=${encodeURIComponent(
+            `/${section}`
+          )}`}
+          className="btn"
+        >
           <Icon name="plus" /> Add device
         </Link>
         {section === "store" && <ImportCsv />}
@@ -68,9 +87,19 @@ export default async function SectionPage({ params, searchParams }) {
         quick={cfg.quick}
         editForm={cfg.editForm}
         back={back}
-        emptyHint={q ? `Nothing matches “${q}”.` : "Nothing here yet. Add a device to get started."}
+        emptyHint={
+          q
+            ? `Nothing matches “${q}”.`
+            : "Nothing here yet. Add a device to get started."
+        }
       />
-      <Pagination basePath={`/${section}`} params={{ q }} page={page} pages={list.pages} total={list.total} />
+      <Pagination
+        basePath={`/${section}`}
+        params={{ q }}
+        page={page}
+        pages={list.pages}
+        total={list.total}
+      />
     </div>
   );
 }
